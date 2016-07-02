@@ -1,4 +1,4 @@
-![ScreenShot](pvLogo.png)
+![ScreenShot](gui/pvLogo.png)
 
 PolyView is a free and open source cross-platform program designed to
 quickly load, view, and edit multiple files containing polygons. It
