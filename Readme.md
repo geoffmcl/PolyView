@@ -1,3 +1,11 @@
+# PolyView Fork
+
+This is a **fork** of https://github.com/oleg-alexandrov/PolyView.
+
+The first aim was a clean build in Windows using CMake and MSVC. That is in the `master` branch.
+
+Then the `Qt5` branch contains a port to **Qt5**. Seems fairly complete, but may need some adjustments for the various versions of MSVC and MinGW.
+
 ![ScreenShot](gui/pvLogo.png)
 
 PolyView is a free and open source cross-platform program designed to
@@ -13,6 +21,8 @@ cut polygons to a box.
 
 # Download
 
+No binary releases have yet been released by this fork, but the parent repository had one, circa Aug 9, 2015 -
+
 * https://github.com/oleg-alexandrov/PolyView/releases
 
 On Linux and OSX the PolyView program is installed in the *bin*
@@ -27,19 +37,26 @@ purpose, academic or commercial.
 # Compiling
 
 PolyView is written in C++. It was successfully compiled on Linux with
-g++, on OSX with clang, and on Windows with MinGW. It was written with
-portability in mind and it should be possible to compile it on any
-platform and compiler.
+g++, on OSX with clang, and on Windows with MinGW and MSVC, in both 32 and 
+64-bit versions. 
 
-Its only dependency is the Qt 4 library (e.g., Qt 4.8). Instructions
-on how to compile Qt are given at the end of this document.
+It was written with portability in mind and it should be possible to compile it on any platform and compiler.
 
-To compile PolyView on Linux or OSX, run:
+Its only dependency is the Qt headers and libraries. THe original version uses Qt4 (e.g., Qt 4.8), but here have started a Qt5 (e.g., Qt 5.6). See `Qt5` branch... 
+
+Instructions on how to compile Qt are given at the end of this document.
+
+In this fork CMake configuration and generation has **replaced** the `QMake` build.
+
+To compile PolyView on any system run:
 
 ```
-qmake polyview.pro
-make
+$ cd build
+$ cmake ..
+$ cmake --build . --config Release
 ```
+
+While the original polyview.pro has been left in place, it has **not** been kept up-to-date, **and** has not been ported to Qt5.
 
 # Comparison with XGRAPH
 
@@ -126,6 +143,7 @@ provides a basic level of scripting and reproducibility.
 * Save the polygons as one file
 * Save the polygons as individual files
 * Overwrite the existing polygons
+* Save a png image file
 
 #### View menu
 
@@ -220,9 +238,11 @@ polygons are displayed.
 * -gridWidth `integer`	Grid width in pixels
 * -gridColor `color`	Grid color
 
+Note, certain options are saved to a persistent INI file.
+
 # Compiling Qt 
 
-PolyView was tested to compile on Linux, OSX, and Windows with Qt 4.8 but other 4.x versions should work as well.
+PolyView was tested to compile on Linux, OSX, and Windows with Qt 4.8 but other 4.x versions should work as well, including Qt5...
 
 Qt can be installed on Ubuntu with the command:
 
@@ -241,4 +261,7 @@ path, run:
 
 # Author
 
-Oleg Alexandrov (oleg.alexandrov@gmail.com)
+Author: Oleg Alexandrov (oleg.alexandrov@gmail.com)
+Contibutor: Geoff R. McLane (reports@geoffair.info)
+
+; eof - 20160702
