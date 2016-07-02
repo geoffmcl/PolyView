@@ -261,7 +261,7 @@ path, run:
 
 # Author
 
-Author: Oleg Alexandrov (oleg.alexandrov@gmail.com)
-Contibutor: Geoff R. McLane (reports@geoffair.info)
+* Author: Oleg Alexandrov (oleg.alexandrov@gmail.com)
+* Contibutor: Geoff R. McLane (reports@geoffair.info)
 
 ; eof - 20160702
