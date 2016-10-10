@@ -26,6 +26,7 @@
 #include <cfloat>
 #include <cstring>
 #include <cassert>
+#include <algorithm>    // for std::min, max
 #include "baseUtils.h"
 #include "geomUtils.h"
 #include "edgeUtils.h"

@@ -30,7 +30,7 @@
 #define M_PI 3.1415926535
 #endif
 
-#if (defined(_MSC_VER) && !defined(round))
+#if (defined(_MSC_VER) && !defined(round) && (_MSC_VER < 1900))
 // provide a 'double round(double)' replacement, at least for MSVC WIN32 build
 static double round(double d)
 {

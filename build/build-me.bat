@@ -1,6 +1,7 @@
 @setlocal
 @set TMPPRJ=polyView
 @echo %TMPPRJ% - Uses Qt5.1 64-bits
+@set VCVERS=14
 @set TMPLOG=bldlog-1.txt
 @set DOTINST=0
 @set DOINSTALL=0
@@ -12,7 +13,7 @@
 
 @if "%Platform%x" == "x64x" goto DNMSVC
 
-@set SET_BAT=%ProgramFiles(x86)%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat
+@set SET_BAT=%ProgramFiles(x86)%\Microsoft Visual Studio %VCVERS%.0\VC\vcvarsall.bat
 @if NOT EXIST "%SET_BAT%" goto NOBAT
 @echo Doing: 'call "%SET_BAT%" AMD64'
 @echo Doing: 'call "%SET_BAT%" AMD64' >> %TMPLOG%
@@ -20,10 +21,15 @@
 @if ERRORLEVEL 1 goto ERR0
 
 :DNMSVC
-
-@call setupqt5.6
-@REM call setupqt64
 @cd %BLDDIR%
+
+@REM Setup Qt5 - 64-bit
+@call setupqt5.6
+@if EXIST tempsp.bat @del tempsp.bat
+@REM call setupqt64
+@call setupqt564 -N
+@if NOT EXIST tempsp.bat goto NOSP
+@call tempsp
 @if "%Qt5_DIR%x" == "x" goto NOQT5
 
 @call chkpath C:\Qt\4.8.6\bin
@@ -43,9 +49,8 @@
 
 @if NOT EXIST %TMPCM% goto NOCM
 
-@set TMPOPTS=-DCMAKE_INSTALL_PREFIX=%TMPINS% -G "Visual Studio 10 Win64"
+@set TMPOPTS=-DCMAKE_INSTALL_PREFIX=%TMPINS% -G "Visual Studio %VCVERS% Win64"
 @set TMPOPTS=%TMPOPTS% -DCMAKE_PREFIX_PATH=%Qt5_DIR%
-@set TMPOPTS=%TMPOPTS% -DQT5_BUILD:BOOL=ON
 
 :RPT
 @if "%~1x" == "x" goto GOTCMD
@@ -59,7 +64,9 @@
 @echo Doing: cmake %TMPSRC% %TMPOPTS% >> %TMPLOG% 2>&1
 @cmake %TMPSRC% %TMPOPTS% >> %TMPLOG% 2>&1
 @if ERRORLEVEL 1 goto ERR1
-@set TMPDBG=RelWithDebInfo
+
+@set TMPDBG=Debug
+@REM set TMPDBG=RelWithDebInfo
 
 @echo Doing: 'cmake --build . --config %TMPDBG%' >> %TMPLOG% 2>&1
 @echo Doing: 'cmake --build . --config %TMPDBG%'
