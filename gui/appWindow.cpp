@@ -716,7 +716,9 @@ void appWindow::about(){
   static QMessageBox* about
     = new QMessageBox( aboutStr.c_str(),
                        "Version: " PV2D_VERSION " (" PV2D_DATE ")\n"
-                       "© Oleg Alexandrov        ", // extra space to make window bigger
+                       "Author: © Oleg Alexandrov        \n" // extra space to make window bigger
+                       "Contrib: Geoff R. McLane.\n"
+                       "Using: Qt4\n",
                        QMessageBox::NoIcon, 1, 0, 0, this, 0, FALSE );
   about->setButtonText( 1, "OK" );
   about->show();
@@ -726,6 +728,7 @@ void appWindow::about(){
             "It will load a 'poly' file, (.xg...), for display, and editing.\n"
             "See Menu - Show Document view for more information.\n<br>"
             "Brought to you by Oleg Alexandrov and Geoff R. McLane.\n "
+            "Usong: Qt5.\n"
                ));
 #endif
   return;
