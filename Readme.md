@@ -1,4 +1,4 @@
-# PolyView Fork
+# PolyView 2D Fork
 
 This is a **fork** of https://github.com/oleg-alexandrov/PolyView.
 
@@ -264,4 +264,4 @@ path, run:
 * Author: Oleg Alexandrov (oleg.alexandrov@gmail.com)
 * Contibutor: Geoff R. McLane (reports@geoffair.info)
 
-; eof - 20160702
+; eof - 20161031 - 20160702
