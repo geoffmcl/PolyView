@@ -1,17 +1,17 @@
 // MIT License Terms (http://en.wikipedia.org/wiki/MIT_License)
-//
+// 
 // Copyright (C) 2011 by Oleg Alexandrov
-//
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,50 +27,15 @@
 #include <cstring>
 #include <cassert>
 #include <algorithm>
-#include <edgeUtils.h>
-#include <dPoly.h>
-#include <polyUtils.h>
-#include <geomUtils.h>
-#include <kdTree.h>
-#include <dTree.h>
+#include "edgeUtils.h"
+#include "dPoly.h"
+#include "polyUtils.h"
+#include "geomUtils.h"
+#include "kdTree.h"
+#include "dTree.h"
 
 using namespace std;
 using namespace utils;
-
-void utils::findClosestAnnotation(// inputs
-                                  double x0, double y0,
-                                  const std::vector<dPoly> & polyVec,
-                                  // outputs
-                                  int & polyVecIndex,
-                                  int & annoIndexInCurrPoly,
-                                  double & minDist
-                                  ){
-
-  // Find the closest annotation in a given vector of polygons to a given point.
-
-  polyVecIndex = -1; annoIndexInCurrPoly = -1;
-  minDist = DBL_MAX;
-
-  for (int s = 0; s < (int)polyVec.size(); s++){
-
-    double minDist0;
-    int annoIndex;
-    polyVec[s].findClosestAnnotation(// inputs
-                                     x0, y0,
-                                     // outputs
-                                     annoIndex, minDist0
-                                     );
-
-    if (minDist0 <= minDist){
-      polyVecIndex  = s;
-      annoIndexInCurrPoly = annoIndex;
-      minDist       = minDist0;
-    }
-
-  }
-
-  return;
-}
 
 void utils::findClosestPolyVertex(// inputs
                                   double x0, double y0,
@@ -84,16 +49,16 @@ void utils::findClosestPolyVertex(// inputs
                                   ){
 
   // Find the closest point in a given vector of polygons to a given point.
-
+  
   polyVecIndex = -1; polyIndexInCurrPoly = -1; vertIndexInCurrPoly = -1;
   minX = x0; minY = y0; minDist = DBL_MAX;
-
+  
   for (int s = 0; s < (int)polyVec.size(); s++){
 
     double minX0, minY0, minDist0;
     int polyIndex, vertIndex;
     polyVec[s].findClosestPolyVertex(// inputs
-                                     x0, y0,
+                                     x0, y0,    
                                      // outputs
                                      polyIndex, vertIndex, minX0, minY0, minDist0
                                      );
@@ -106,7 +71,7 @@ void utils::findClosestPolyVertex(// inputs
       minX          = minX0;
       minY          = minY0;
     }
-
+    
   }
 
   return;
@@ -122,14 +87,14 @@ void utils::findClosestPolyEdge(// inputs
                                 ){
 
   // Find the closest edge in a given vector of polygons to a given point.
-
+  
   vecIndex  = -1;
   polyIndex = -1;
   vertIndex = -1;
   minX      = DBL_MAX;
   minY      = DBL_MAX;
   minDist   = DBL_MAX;
-
+  
   for (int vecIter = 0; vecIter < (int)polyVec.size(); vecIter++){
 
     double lx, ly, ldist;
@@ -141,12 +106,12 @@ void utils::findClosestPolyEdge(// inputs
     if (ldist <= minDist){
       vecIndex  = vecIter;
       polyIndex = pIndex;
-      vertIndex = vIndex;
+      vertIndex = vIndex;      
       minX      = lx;
       minY      = ly;
       minDist   = ldist;
     }
-
+    
   }
 
   return;
@@ -162,13 +127,13 @@ void utils::alignPoly1ToPoly2(dPoly       & poly1,
   vector<segDist> distVec;
 
   findDistanceFromVertsOfPoly1ToVertsPoly2(// inputs
-                                           poly1, poly2,
+                                           poly1, poly2,  
                                            // outputs
                                            distVec
                                            );
   int len = distVec.size();
   if (len == 0) return; // one of the polygons is empty
-
+    
   segDist S = distVec[len -1]; // this corresponds to shortest distance
   poly1.applyTransform(1, 0, 0, 1, S.endx - S.begx, S.endy - S.begy, T);
 
@@ -181,7 +146,7 @@ void utils::findDistanceFromVertsOfPoly1ToVertsPoly2(// inputs
                                                      // outputs
                                                      std::vector<segDist> & distVec
                                                      ){
-
+  
   // Given two sets of polygons, for each vertex in the first set of
   // polygons find the distance to the closest vertex in the second
   // set of polygons, and the segment with the smallest distance. Sort
@@ -189,7 +154,7 @@ void utils::findDistanceFromVertsOfPoly1ToVertsPoly2(// inputs
 
   // The complexity of this algorithm is roughly
   // size(poly1)*log(size(poly2)).
-
+  
   distVec.clear();
 
   const double * x1 = poly1.get_xv();
@@ -203,7 +168,7 @@ void utils::findDistanceFromVertsOfPoly1ToVertsPoly2(// inputs
 
   // Put the edges of the second polygon in a tree for fast access
   kdTree T;
-  T.formTreeOfPoints(numVerts2, x2, y2);
+  T.formTreeOfPoints(numVerts2, x2, y2); 
 
   for (int t = 0; t < numVerts1; t++){
 
@@ -211,12 +176,12 @@ void utils::findDistanceFromVertsOfPoly1ToVertsPoly2(// inputs
     double closestDist;
     PointWithId closestPt;
     T.findClosestVertexToPoint(// inputs
-                               x, y,
+                               x, y,  
                                // outputs
                                closestPt, closestDist
                                );
     distVec.push_back(segDist(x, y, closestPt.x, closestPt.y, closestDist));
-
+    
   }
 
   sort(distVec.begin(), distVec.end(), segDistGreaterThan);
@@ -234,18 +199,18 @@ void utils::findDistanceBwPolys(// inputs
   // Find the distances from poly1 to poly2, then from poly2 to poly1.
   // Sort them in decreasing order of their lengths. See
   // findDistanceFromPoly1ToPoly2 for more info.
-
-  findDistanceFromPoly1ToPoly2(poly1, poly2, // inputs
+  
+  findDistanceFromPoly1ToPoly2(poly1, poly2, // inputs  
                                distVec       // outputs
                                );
-
+  
   vector<segDist> l_distVec;
-  findDistanceFromPoly1ToPoly2(poly2, poly1, // inputs
+  findDistanceFromPoly1ToPoly2(poly2, poly1, // inputs  
                                l_distVec     // outputs
                                );
-
+  
   for (int s = 0; s < (int)l_distVec.size(); s++) distVec.push_back(l_distVec[s]);
-
+  
   sort(distVec.begin(), distVec.end(), segDistGreaterThan);
 
   return;
@@ -257,7 +222,7 @@ void utils::findDistanceFromPoly1ToPoly2(// inputs
                                          // outputs
                                          std::vector<segDist> & distVec
                                          ){
-
+  
   // Given two sets of polygons, for each vertex in the first set of
   // polygons find the distance to the closest point (may be on edge)
   // in the second set of polygons, and the segment with the smallest
@@ -266,7 +231,7 @@ void utils::findDistanceFromPoly1ToPoly2(// inputs
 
   // The complexity of this algorithm is roughly
   // size(poly1)*log(size(poly2)).
-
+  
   distVec.clear();
 
   const double * x1 = poly1.get_xv();
@@ -285,11 +250,11 @@ void utils::findDistanceFromPoly1ToPoly2(// inputs
     double x = x1[t], y = y1[t];
     double closestX, closestY, closestDist;
     seg closestEdge;
-    T.findClosestEdgeToPoint(x, y,                                        // inputs
+    T.findClosestEdgeToPoint(x, y,                                        // inputs 
                              closestEdge, closestDist, closestX, closestY // outputs
                              );
     distVec.push_back(segDist(x, y, closestX, closestY, closestDist));
-
+    
   }
 
   sort(distVec.begin(), distVec.end(), segDistGreaterThan);
@@ -305,31 +270,31 @@ void utils::findDistanceBwPolysBruteForce(// inputs
                                           ){
 
   // A naive (but simple) implementation of findDistanceFromPoly1ToPoly2.
-
+  
   distVec.clear();
 
   const double * x = poly1.get_xv();
   const double * y = poly1.get_yv();
   int numVerts1    = poly1.get_totalNumVerts();
   int numVerts2    = poly2.get_totalNumVerts();
-
+  
   if (numVerts1 == 0 || numVerts2 == 0) return; // no vertices
 
   for (int t  = 0; t < numVerts1; t++){
-
+    
     int minPolyIndex, minVertIndex;
     double minX, minY, minDist = DBL_MAX;
     poly2.findClosestPolyEdge(x[t], y[t],                                      // inputs
                               minPolyIndex, minVertIndex, minX, minY,  minDist // outputs
                               );
 
-
+    
     if (minDist != DBL_MAX)
       distVec.push_back(segDist(x[t], y[t], minX, minY, minDist));
   }
 
   sort(distVec.begin(), distVec.end(), segDistGreaterThan);
-
+  
   return;
 }
 
@@ -353,7 +318,7 @@ void utils::putPolyInMultiSet(const dPoly & P, std::multiset<dPoint> & mP){
 void utils::findPolyDiff(const dPoly & P, const dPoly & Q, // inputs
                          std::vector<dPoint> & vP, std::vector<dPoint> & vQ // outputs
                          ){
-
+    
   // Compare two polygons point-by-point. We assume that the polygons
   // may have collinear points. If one polygon has a point repeated
   // twice, but the second polygon has it repeated just once, this
@@ -361,7 +326,7 @@ void utils::findPolyDiff(const dPoly & P, const dPoly & Q, // inputs
 
   // This utility will not be able to detect when two polygons are
   // different but contain exactly the same points.
-
+  
   multiset<dPoint> mP; putPolyInMultiSet(P, mP);
   multiset<dPoint> mQ; putPolyInMultiSet(Q, mQ);
 
@@ -376,7 +341,7 @@ void utils::findPolyDiff(const dPoly & P, const dPoly & Q, // inputs
       mQ.erase(iq); // Erase just the current instance of the given value
     }
   }
-
+  
   // Wipe it from mP as well
   for (int s = 0; s < (int)shared.size(); s++){
     ip = mP.find(shared[s]);
@@ -398,7 +363,7 @@ void utils::findPolyDiff(const dPoly & P, const dPoly & Q, // inputs
     q.y = iq->y;
     vQ.push_back(q);
   }
-
+  
   return;
 }
 
@@ -417,10 +382,10 @@ void utils::bdBox(const std::vector<dPoly> & polyVec,
     xll = min(xll, xll0); xur = max(xur, xur0);
     yll = min(yll, yll0); yur = max(yur, yur0);
   }
-
+  
   return;
 }
-
+  
 
 void utils::setUpViewBox(// inputs
                          const std::vector<dPoly> & polyVec,
@@ -428,15 +393,15 @@ void utils::setUpViewBox(// inputs
                          double & xll,  double & yll,
                          double & widx, double & widy
                          ){
-
+  
   // Given a set of polygons, set up a box containing these polygons.
 
   double xur, yur; // local variables
-
-  bdBox(polyVec,           // inputs
+  
+  bdBox(polyVec,           // inputs 
         xll, yll, xur, yur // outputs
         );
-
+  
   // Treat the case of empty polygons
   if (xur < xll || yur < yll){
     xll = 0.0; yll = 0.0; xur = 1000.0; yur = 1000.0;
@@ -445,7 +410,7 @@ void utils::setUpViewBox(// inputs
   // Treat the case when the polygons are degenerate
   if (xur == xll){ xll -= 0.5; xur += 0.5; }
   if (yur == yll){ yll -= 0.5; yur += 0.5; }
-
+    
   widx = xur - xll; assert(widx > 0.0);
   widy = yur - yll; assert(widy > 0.0);
 
@@ -453,9 +418,9 @@ void utils::setUpViewBox(// inputs
   double factor = 0.05;
   xll -= widx*factor; xur += widx*factor; widx *= 1.0 + 2*factor;
   yll -= widy*factor; yur += widy*factor; widy *= 1.0 + 2*factor;
-
+  
   return;
-
+  
 }
 
 
@@ -465,7 +430,7 @@ void utils::markPolysInHlts(// Inputs
                             // Outputs
                             std::map< int, std::map<int, int> > & markedPolyIndices
                             ){
-
+  
   markedPolyIndices.clear();
 
   for (int s = 0; s < (int)highlights.size(); s++){
@@ -476,7 +441,7 @@ void utils::markPolysInHlts(// Inputs
 
     map<int, int> mark;
     for (int t = 0; t < (int)polyVec.size(); t++){
-      polyVec[t].markPolysIntersectingBox(xll, yll, xur, yur, // Inputs
+      polyVec[t].markPolysIntersectingBox(xll, yll, xur, yur, // Inputs 
                                           mark                // Outputs
                                           );
       for (map<int, int>::iterator it = mark.begin(); it != mark.end(); it++){
@@ -484,7 +449,7 @@ void utils::markPolysInHlts(// Inputs
       }
     }
   }
-
+  
   return;
 }
 
@@ -512,12 +477,12 @@ void utils::scaleMarkedPolysAroundCtr(// Inputs
   matrix2 M;
   M.a11 = scale; M.a12 = 0.0; M.a21 = 0.0; M.a22 = scale;
   transformMarkedPolysAroundCtr(// Inputs
-                                markedPolyIndices, M,
+                                markedPolyIndices, M,  
                                 // Inputs-outputs
                                 polyVec
                                 );
-
-  return;
+  
+  return;  
 }
 
 void utils::rotateMarkedPolysAroundCtr(// Inputs
@@ -528,7 +493,7 @@ void utils::rotateMarkedPolysAroundCtr(// Inputs
                                        ){
 
   double a = angle*M_PI/180.0, c = cos(a), s= sin(a);
-
+  
   if (angle == round(angle) && int(angle)%90 == 0 ){
     // The special case of angle multiple of 90 degrees
     c = round(c), s = round(s);
@@ -537,11 +502,11 @@ void utils::rotateMarkedPolysAroundCtr(// Inputs
   matrix2 M;
   M.a11 = c; M.a12 = -s; M.a21 = s; M.a22 = c;
   transformMarkedPolysAroundCtr(// Inputs
-                                markedPolyIndices, M,
+                                markedPolyIndices, M,  
                                 // Inputs-outputs
                                 polyVec
                                 );
-  return;
+  return;  
 }
 
 void utils::transformMarkedPolysAroundCtr(// Inputs
@@ -555,20 +520,20 @@ void utils::transformMarkedPolysAroundCtr(// Inputs
 
   vector<dPoly> extractedPolyVec;
   extractMarkedPolys(// Inputs
-                     polyVec, markedPolyIndices,
+                     polyVec, markedPolyIndices,  
                      // Outputs
                      extractedPolyVec
                      );
-
+  
   // Find the center of the bounding box of the marked polygons
   double xll, yll, xur, yur;
-  bdBox(extractedPolyVec,   // inputs
+  bdBox(extractedPolyVec,   // inputs 
         xll, yll, xur, yur  // outputs
         );
   dPoint P;
   P.x = (xll + xur)/2.0;
   P.y = (yll + yur)/2.0;
-
+    
   for (int pIter = 0; pIter < (int)polyVec.size(); pIter++){
     polyVec[pIter].transformMarkedPolysAroundPt(markedPolyIndices[pIter], M, P);
   }
@@ -597,23 +562,23 @@ void utils::extractMarkedPolys(// Inputs
 
   int pSize = polyVec.size();
   extractedPolyVec.resize(pSize);
-
+  
   for (int pIter = 0; pIter < pSize; pIter++){
     polyVec[pIter].extractMarkedPolys(markedPolyIndices[pIter], // input
                                       extractedPolyVec[pIter]   // output
                                       );
   }
-
+  
   return;
 }
 
 int utils::getNumElements(std::map< int, std::map<int, int> > & Indices){
 
   int num = 0;
-  map< int, map<int, int> >::iterator it;
+  map< int, map<int, int> >::iterator it; 
   for (it = Indices.begin(); it != Indices.end(); it++){
     num += (it->second).size();
   }
-
+  
   return num;
 }

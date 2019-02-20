@@ -24,10 +24,14 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QTableWidget>
+#ifdef USE_QT4_DEFS // Q3VBoxLayout
+#include <Q3VBoxLayout>
+#else
 #include <QVBoxLayout>
+#endif
 #include <QWidget>
-#include <chooseFilesDlg.h>
-#include <utils.h>
+#include "chooseFilesDlg.h"
+#include "utils.h"
 using namespace std;
 
 // Allow the user to choose which files to hide/show in the GUI.
@@ -37,8 +41,11 @@ chooseFilesDlg::chooseFilesDlg(QWidget * parent): QDialog(parent){
   setWindowModality(Qt::ApplicationModal); 
 
   int spacing = 6;
-  
+#ifdef USE_QT4_DEFS // Q3VBoxLayout
+  Q3VBoxLayout * vBoxLayout = new Q3VBoxLayout(this);
+#else
   QVBoxLayout * vBoxLayout = new QVBoxLayout(this);
+#endif
   vBoxLayout->setSpacing(spacing);
   vBoxLayout->setAlignment(Qt::AlignLeft);
 

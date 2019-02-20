@@ -1,267 +1,112 @@
-# PolyView 2D Fork
+# PolyView2D 20160622
 
-This is a **fork** of https://github.com/oleg-alexandrov/PolyView.
+Update 20160622 - 20141005 - 20140713:
 
-The first aim was a clean build in Windows using CMake and MSVC. That is in the `master` branch.
+#### History
 
-Then the `Qt5` branch contains a port to **Qt5**. Seems fairly complete, but may need some adjustments for the various versions of MSVC and MinGW.
+This is a clone/fork of the original polyview2d. It may or may not work as the online documentation states, but should be very close...
 
-![ScreenShot](gui/pvLogo.png)
+site: https://sites.google.com/site/polyview2d/ - checkout the latest [release](https://github.com/oleg-alexandrov/PolyView/releases), Aug 9, 2015... thank you Oleg Alexandrov...
 
-PolyView is a free and open source cross-platform program designed to
-quickly load, view, and edit multiple files containing polygons. It
-can zoom and pan, show polygons as edges, points, and filled, display
-text labels, print the coordinates of vertices and measure distances,
-change the order in which polygons are displayed, choose which
-polygons to show, etc.
+The first clone/fork appeared as - https://gitlab.com/fgtools/osm2xg/tree/master/polyView2D - ie part of another project... this takes over from that now depreciated source...
 
-PolyView can add, delete, move, rotate, and scale polygons, add,
-delete, and move vertices and edges, add and delete text labels, and
-cut polygons to a box.
+Also this clone/fork, like the earlier, is built by cmake. No attempt has been made to keep the qmake *.pro file up-to-date, and thus may not build, especially for Qt5...
 
-# Download
+#### Licence
 
-No binary releases have yet been released by this fork, but the parent repository had one, circa Aug 9, 2015 -
+See License.txt ... [MIT License Terms](http://en.wikipedia.org/wiki/MIT_License)...
 
-* https://github.com/oleg-alexandrov/PolyView/releases
+#### Build
 
-On Linux and OSX the PolyView program is installed in the *bin*
-directory.  On Windows it is in the base directory. The Windows
-version is large because of the size of the Qt libraries.
+To compile PolyView from source, you need CMake installed. See -  http://www.cmake.org/install/
 
-# License
+The original version was ported to Qt4, this version to Qt5, so to build and run it you need Qt installed, and the environment setup correctly. The main things in Windows, are the Qt5_DIR correctly set, and the PATH adjusted to add the Qt5 bin directory, and here built using MSVC10, in 64-bits, Win7... 
 
-PolyView is available under the MIT license and can be used for any
-purpose, academic or commercial.
+For Qt5 and other MSVC versions, adjustments need to be made in the build-me.bat files, but hopefully, not too many...
+ 
+With everything setup, change directory to the 'build' folder, and run -
 
-# Compiling
+````
+build-me.bat - Windows
+build-me.sh  - Linux
+````
 
-PolyView is written in C++. It was successfully compiled on Linux with
-g++, on OSX with clang, and on Windows with MinGW and MSVC, in both 32 and 
-64-bit versions. 
+Note the Windows install location is C:\MDOS, which is in my PATH and the linux install location is $HOME/bin, also in my PATH. Manually adjust these locations as **desired**...
 
-It was written with portability in mind and it should be possible to compile it on any platform and compiler.
+And in windows the Qt 64-bit, and MSVC10 vc batch for AMD64 must be available. See the build-me.bat, which uses the `msvc2015_64` for the Qt5 binaries... adjustments will be required by other MSVC versions... Qt5 installs...
 
-Its only dependency is the Qt headers and libraries. THe original version uses Qt4 (e.g., Qt 4.8), but here have started a Qt5 (e.g., Qt 5.6). See `Qt5` branch... 
+But even without these scripts the simple build instruction are -
 
-Instructions on how to compile Qt are given at the end of this document.
+Windows: In the `build` folder run
 
-In this fork CMake configuration and generation has **replaced** the `QMake` build.
+````
+> cmake .. [-DCMAKE_INSTALL_PREFIX=path/for/install]
+> cmake --build . --config Release
+And if install desired - did you **fix** the install path?
+> cmake --build . --config Release --target INSTALL
+````
 
-To compile PolyView on any system run:
+Linux: In the `build` folder run
 
-```
-$ cd build
-$ cmake ..
-$ cmake --build . --config Release
-```
+````
+$ cmake .. [-DCMAKE_INSTALL_PREFIX=path/for/install]
+$ make
+And if install desired
+$ make install
+````
 
-While the original polyview.pro has been left in place, it has **not** been kept up-to-date, **and** has not been ported to Qt5.
+Running the polyView2D binary, `MENU -> Help -> Show documentation` puts up a complete help window... ie --help outputs a brief help to the console, cout...
 
-# Comparison with XGRAPH
+The `testData` folder contains lots of example xg files to view. The source indicates it also supports files of (type == "pol" ||type == "cnt"), but this has **NOT** been tested in this source...
 
-PolyView was inspired by XGRAPH (http://www.xgraph.org/). The latter
-is a general purpose data plotter and has a lot of features PolyView
-lacks. PolyView has extra features for viewing and editing polygons.
+The xg file format is a sub-set of xgraph files. polyView2D supports lines like -
 
-PolyView is (as of 2007) more responsive for polygons with very many 
-vertices, and it can handle zooming to small regions of polygons with 
-large floating point vertex coordinates without overflowing and 
-showing incorrect results. Credit for responsiveness goes to Qt,
-and issues with overlow required careful handling.
+````
+# this is a comment line, and skipped
+anno lon lat Annotation text
+color red # trailing comment
+lon1 lat1 [; 1:1]
+lon2 lat2
+lon3 lat3
+next
+...
+````
 
-Lastly, PolyView is open-source and under a liberal license, and can
-be improved in a collaborative manner.
+A very simply and quick method to 'draw' and 'view' a polygon or poly line... in 2D...
 
-# Documentation
+Have fun...
 
-## File format
+Geoff.
 
-PolyView uses the XGRAPH file format, in which the x and y coordinates of each
-polygon are stored as two columns in a plain text file followed by the
-"NEXT" statement. Here is a sample polygon file storing a rectangle
-and a triangle.
+Original Text 20111109: - DEPRECIATED - NOT TESTED
+-----------------------
 
-```
-color = red
-6.5 5.0
-7.2 5.0
-7.2 7.0
-6.5 7.0
-6.5 5.0
-NEXT
-color = green
-8.0 3.0
-9.0 3.0
-8.0 4.0
-8.0 3.0
-NEXT
-anno 7.0 5.5 text label
-```
+As stated above no attempt has been made to keep the .pro file
+correct, so this may fail...
 
-Polygon vertices are stored in double precision.
+PolyView is a free polygon viewer. The PolyView documentation is at
 
-Notice that the first vertex of each polygon is repeated again before
-the "NEXT" statement, to signal to the viewer that the polygon is
-closed. PolyView can also display polygonal lines, in addition to
-polygons, when the last vertex need not equal the first one. The last line
-above shows how to place a text label, with its coordinates and text.
+https://sites.google.com/site/polyview2d/
 
+To compile PolyView from source, the Qt 4 development libraries need to
+be installed. They can can be obtained in Ubuntu by typing
 
-## Functionality
+````
+$ [sudo] apt-get install qmake
+````
 
-### Mouse buttons
+The next steps are:
 
-The left mouse button snaps to the closest polygon vertex and prints
-its coordinates in the terminal used to start PolyView. A subsequent
-click also prints the distance from the previous vertex to the current
-one.  The middle mouse button prints the coordinates of where the
-mouse clicked, without snapping to the closest vertex.  Dragging the
-mouse from lower-left to upper-right zooms in, and doing it in reverse
-zooms out.  Dragging the mouse while keeping the Control key pressed
-creates a highlight which can be used to cut the polygons to the
-highlight or to paste/move/delete them.
+````
+cd gui
+qmake polyview.pro 
+make
+````
 
-### Keyboard shortcuts
+The 'qmake' command will generate a makefile which whill be used by
+'make' to build the executable. The 'gui' directory has a sample
+makefile as generated by 'qmake'.
 
-Panning is accomplished by using the arrow keys, zooming is done with
-the plus and minus keys. Many other actions are bound to keyboard
-keys, as can be seen when invoking them from the menu.
-
-### Command box
-
-Many GUI operations (such as zoom) echo their action as a command in
-the terminal. That command can be pasted in the command box at the
-bottom of the PolyView GUI to reproduce the original operation. This
-provides a basic level of scripting and reproducibility.
-
-### Menu functions 
-
-#### File menu
-
-* Load a polygon file in addition to existing files
-* Save the polygons as one file
-* Save the polygons as individual files
-* Overwrite the existing polygons
-* Save a png image file
-
-#### View menu
+As stated, **not** tested, ...
 
-* Choose which files to hide/show
-* Zoom and pan
-* Reset the view to contain all polygons with a small padding
-* Change the order in which the polygons are displayed
-* Show/hide annotations (text labels)
-* Show the polygons filled with color
-* Show the vertices only (no edges)
-* Show the index of each vertex
-* Show the layer ids (if present)
-
-#### Edit menu
-
-* Undo and redo
-* Create a polygon with integer vertices and edge angles multiple of 45 degrees
-* Enforce integer vertices and edge angles multiple of 45 degrees
-* Create a polygon with arbitrary angles
-
-#### Transform menu
-
-* Translate/rotate/scale the polygons
-
-#### Selection menu
-
-* Create a highlight (the polygons in the highlight are automatically selected and copied to a buffer)
-* Cut the polygons to the current highlight
-* Delete the selected polygons
-* Paste the selected polygons
-* Move the selected polygons (use Shift-Mouse)
-* Deselect all polygons and delete all highlights
-* Translate/rotate/scale/transform selected polygons
-
-#### Grid menu
-
-* Show/hide the grid
-* Enforce that all polygon edges have angles multiple of 45 degrees and snap the vertices to the grid
-* Set the grid size
-* Set the grid linewidth
-* Set the grid color
-
-#### Diff menu
-
-* Change the colors of polygons so that polygons from different files have different colors
-* Enter diff mode (a mode in which two similar polygon files can be compared)
-* Show the next/previous difference between given two given polygon files (starting with the largest difference)
-
-#### Options menu
-
-* Set the linewidth of polygon edges
-* Set the background color
-
-#### Right-click menu
-
-* Show and save a mark at the current point
-* Create a polygon with integer vertices and edge angles multiple of 45 degrees
-* Enforce integer vertices and edge angles multiple of 45 degrees
-* Create a polygon with arbitrary angles
-* Delete the polygon at mouse cursor
-* Enter move polygons mode (use Shift-Mouse to move a polygon; if some polygons are selected using a highlight, then all selected polygons will be moved)
-* Enter move vertices mode (use Shift-Mouse to move a vertex)
-* Enter move edges mode (use Shift-Mouse to move an edge)
-* Insert a vertex on the edge closest to the mouse cursor
-* Delete the vertex closest to the mouse cursor
-* Copy the polygon closest to the mouse cursor
-* Paste the polygon closest to the mouse cursor
-* Reverse the orientation of the polygon closest to the mouse cursor
-* Insert text label
-* Delete text label
-* Enter align mode (a mode in which, given two polygon files, the second polygon file is kept fixed, while the first one can be interactively translated using Shift-Mouse and rotated/flipped from the right-click menu until it aligns to the second one)
-
-# Command line options
-
-PolyView will open simultaneously all polygon files supplied as inputs
-on the command line. Various command line options can modify how the
-polygons are displayed.
-
-* -h | -help	Show the available command line options
-* -geo[metry] `width`x`height`	The window size in pixels (for example, 800x800)
-* -bg | -backgroundColor `color`	Color of the background (the default is black)
-* -c | -color `color`	All polygons after this option will show up in the given color (the default is to use the colors specified in the polygon files) 
-* -fs | -fontSize `integer`	The text font size in pixels
-* -lw | -lineWidth `integer`	All polygons after this option will show up with given linewidth
-* -p | -points	All polygons after this option will show up as vertices rather than edges (a subsequent -p option undoes this behavior)
-* -cp | -closedPoly	All polygons after this option will show up as closed (the last vertex is connected to the first one)
-* -nc | -nonClosedPoly	Interpret the polygons after this option as polygonal lines (the last vertex is not connected to the first one)
-* -f | -filledPoly	All polygons after this option will show up as filled
-* -nf | -nonFilledPoly	All polygons after this option will show up as not filled
-* -grid on | off	Turn on/off the grid display
-* -gridSize `integer`	Grid size
-* -gridWidth `integer`	Grid width in pixels
-* -gridColor `color`	Grid color
-
-Note, certain options are saved to a persistent INI file.
-
-# Compiling Qt 
-
-PolyView was tested to compile on Linux, OSX, and Windows with Qt 4.8 but other 4.x versions should work as well, including Qt5...
-
-Qt can be installed on Ubuntu with the command:
-
-```
-apt-get install qmake
-```
-
-To compile Qt 4.8 from source, get the source code from:
-
-*  https://download.qt.io/archive/qt/4.8/
-
-After unzipping the archive and ensuring that the compiler is in the
-path, run:
-
-* configure -opensource -fast -confirm-license -nomake demos -nomake examples -nomake docs -nomake translations -no-webkit -no-script -no-scripttools -no-openssl -no-libjpeg -no-libmng  -no-libtiff -no-cups -no-nis -no-opengl -no-openvg -no-phonon -no-phonon-backend -no-sql-psql -no-dbus
-
-# Author
-
-* Author: Oleg Alexandrov (oleg.alexandrov@gmail.com)
-* Contibutor: Geoff R. McLane (reports@geoffair.info)
-
-; eof - 20161031 - 20160702
+; eof

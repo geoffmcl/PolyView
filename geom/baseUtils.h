@@ -31,7 +31,6 @@
 #endif
 
 #if (defined(_MSC_VER) && !defined(round) && (_MSC_VER < 1900))
-// provide a 'double round(double)' replacement, at least for MSVC WIN32 build
 static double round(double d)
 {
     int res;
@@ -48,7 +47,6 @@ static double round(double d)
     return (double)res;
 }
 #endif
-
 namespace utils{
   
   template<class T>

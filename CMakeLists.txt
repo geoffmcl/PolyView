@@ -17,9 +17,9 @@ endif()
 
 project( polyView )
 
-option( ADD_SAVE_IMAGE "set ON the add a save to an image file."               ON  )
-option( ADD_PREF_INI   "set ON the add a read/write preferecnes to INI file."  ON  )
-option( QT5_BUILD      "Set OFF to find and link with Qt4..."                  ON  )
+option( ADD_SAVE_IMAGE "set ON the add a save to an image file."               ON )
+option( ADD_PREF_INI   "set ON the add a read/write preferecnes to INI file."  ON )
+option( QT5_BUILD      "Set ON to find and link with Qt5."                     ON )
 
 # ### NOTE: *** Adjust version.txt when required ***
 # read 'version' file into a variable (stripping any newlines or spaces)
@@ -68,7 +68,8 @@ if(WIN32 AND MSVC)
     foreach(warning 4267 4800)
         set(WARNING_FLAGS "${WARNING_FLAGS} /wd${warning}")
     endforeach()
-    set( MSVC_FLAGS "-DNOMINMAX -D_USE_MATH_DEFINES -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D__CRT_NONSTDC_NO_WARNINGS" )
+    # 20161010 - remove -DNOMINMAX
+    set( MSVC_FLAGS "-D_USE_MATH_DEFINES -D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS -D__CRT_NONSTDC_NO_WARNINGS" )
     # if (${MSVC_VERSION} EQUAL 1600)
     #    set( MSVC_LD_FLAGS "/FORCE:MULTIPLE" )
     # endif (${MSVC_VERSION} EQUAL 1600)
@@ -128,10 +129,9 @@ find_package ( Qt4 COMPONENTS QtCore QtGui QtNetwork QtWebkit QtXml QtXmlPattern
 include ( ${QT_USE_FILE} )
 add_definitions( ${QT_DEFINITIONS} )
 add_definitions( -DQT3_SUPPORT=1 )
-add_definitions( -DUSE_QT4_DEFS )
 # debug messages
-message(STATUS "*** Qt4 found include ( ${QT_USE_FILE} )")
-message(STATUS "*** add_definitions( -DQT3_SUPPORT=1 -DUSE_QT4_DEFS ${QT_DEFINITIONS} )")
+message(STATUS "*** include ( ${QT_USE_FILE} )")
+message(STATUS "*** add_definitions( ${QT_DEFINITIONS} )")
 ##############################################################
 endif ()
 
@@ -234,7 +234,7 @@ if (MSVC)
     ### *** NOTE SPECIFIC INSTALL LOCATION ***   ###
     ### change to suite your desire, environment ###
     ################################################
-    install(TARGETS ${name} DESTINATION C:/MDOS )
+    install(TARGETS ${name} DESTINATION C:/MDOS/bin.x64 )
 else ()
     # 'standard' install - /usr/local/bin
     install(TARGETS ${name} DESTINATION bin )
