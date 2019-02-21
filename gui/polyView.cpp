@@ -61,6 +61,8 @@
 #ifdef WIN32
 #include <direct.h> // for _getcwd
 #define getcwd _getcwd
+#else
+#include <unistd.h> // for getcwd, ...
 #endif  // WIN32
 #include "utils.h"
 
