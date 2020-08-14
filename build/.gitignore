@@ -19,4 +19,6 @@ Release/*
 Makefile
 polyView2D
 install_manifest.txt
+.vs/*
+Debug/*
 
